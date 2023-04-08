@@ -1,17 +1,29 @@
-#!/usr/bin/env bash
-# website
-if [ $# -eq 0 ]; then
-    exit
+#!/bin/bash
+# Function to retrieve DNS record information
+function get_dns_info {
+  local domain="$1"
+  local subdomain="$2"
+  local record_type="$3"
+  dig +short "$subdomain.$domain" "$record_type" | awk '{printf "%s\n",$0}'
+}
+
+# Define domain and subdomains
+domain="example.com"
+subdomains=("www" "lb-01" "web-01" "web-02")
+
+# If subdomain parameter is provided, only audit that subdomain
+if [[ -n "$2" ]]; then
+  subdomains=("$2")
 fi
-sites=("www" "lb-01" "web-01" "web-02")
-if [ "$2" ]
-then
-    sites=("$2")
-fi
-for i in "${sites[@]}"
-do
-    first="$(dig $i."$1" | grep -A1 'ANSWER SECTION:'| tail -1 | awk '{print $1}'|cut -d '.' -f1)"
-    second="$(dig $i."$1" | grep -A1 'ANSWER SECTION:'| tail -1 | awk '{print $4}')"
-    third="$(dig $i."$1" | grep -A1 'ANSWER SECTION:'| tail -1 | awk '{print $5}')"
-    echo "The subdomain $first is a $second record and points to $third"
+
+# Loop through subdomains and display DNS record information
+for subdomain in "${subdomains[@]}"; do
+  for record_type in "A" "CNAME"; do
+    record_info=$(get_dns_info "$domain" "$subdomain" "$record_type")
+    if [[ -n "$record_info" ]]; then
+      echo "The subdomain $subdomain is a $record_type record and points to $record_info"
+      break
+    fi
+  done
 done
+
