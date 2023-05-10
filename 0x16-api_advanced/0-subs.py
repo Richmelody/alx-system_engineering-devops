@@ -1,8 +1,8 @@
 #!/usr/bin/python3
-# get subs
 from requests import get
 from sys import argv
 
+# get subs
 
 def number_of_subscribers(subreddit):
     """Get number of subscribers for a given subreddit."""
