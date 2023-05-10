@@ -1,20 +1,25 @@
 #!/usr/bin/python3
-# get subs
-from requests import get
-from sys import argv
+
+import requests
 
 
 def top_ten(subreddit):
-    """subs"""
-    head = {'User-Agent': 'Dan Kazam'}
-    try:
-        count = get('https://www.reddit.com/r/{}/hot.json?count=10'.format(
-            subreddit), headers=head).json().get('data').get('children')
-        print('\n'.join([dic.get('data').get('title')
-                         for dic in count][:10]))
-    except:
-        print('None')
+    url = "https://www.reddit.com/r/{}/hot.json?limit=10".format(subreddit)
+    headers = {'User-Agent': 'MyBot/0.0.1'}
+    response = requests.get(url, headers=headers)
+
+    if response.status_code == 200:
+        json_data = response.json()
+        for post in json_data['data']['children']:
+            print(post['data']['title'])
+    else:
+        print(None)
 
 
-if __name__ == "__main__":
-    top_ten(argv[1])
+if __name__ == '__main__':
+    import sys
+    if len(sys.argv) < 2:
+        print("Please pass an argument for the subreddit to search.")
+    else:
+        top_ten(sys.argv[1])
+
