@@ -1,3 +1,5 @@
 #!/usr/bin/env bash
-# Script that turns on an Apache Server
-service apache2 start
+# script that restores the default server port
+
+sudo ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
+sudo service nginx start
