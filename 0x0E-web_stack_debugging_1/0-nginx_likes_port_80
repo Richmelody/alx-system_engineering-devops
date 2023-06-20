@@ -1,13 +1,10 @@
 #!/usr/bin/env bash
 # Get the server's IP address
 ip_address=$(ifconfig | awk '/inet /{print $2}')
-
 # Update the Nginx configuration
 sed -i "s/listen 80;/listen 80 default_server;/g" /etc/nginx/sites-available/default
-
 # Restart Nginx
 service nginx restart
-
 # Output the IP addresses and confirm Nginx is listening on port 80
 echo "Nginx is now listening on port 80 of the following IP addresses:"
 echo "$ip_address"
