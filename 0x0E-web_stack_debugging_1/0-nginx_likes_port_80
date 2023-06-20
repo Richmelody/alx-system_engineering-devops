@@ -2,6 +2,6 @@
 #This script will update the package list, install Nginx, start the Nginx service, modify the default configuration file to listen on port 80, and restart the Nginx service to apply the changes.
 apt-get update
 apt-get install -y nginx
-systemctl start nginx
+service nginx start
 sed -i 's/80 default_server/80/g' /etc/nginx/sites-available/default
-systemctl restart nginx
+service nginx restart
